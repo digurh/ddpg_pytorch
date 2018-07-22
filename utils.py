@@ -27,5 +27,5 @@ def forward_compute(X, layer):
     if layer == 1:
         return F.relu(torch.mm(X, self.weights['1']) + self.bias['1'])
     else:
-        X = self.__forward(F.relu(torch.mm(X, self.weights[str(layer)]) + self.bias[str(layer)]), layer-1)
+        X = forward_compute(F.relu(torch.mm(X, self.weights[str(layer)]) + self.bias[str(layer)]), layer-1)
         return torch.mm(X, self.weights[str(layer)] + self.bias[str(layer)])
