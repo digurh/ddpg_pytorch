@@ -2,10 +2,10 @@ import numpy as np
 
 import torch
 from torch import nn
-]import torch.nn.init as init
+import torch.nn.init as init
 
 
-def initialize_params(state_size, action_size, n_hidden_units=128, n_layers=3, initialize=None):
+def linear_params_init(state_size, action_size, n_hidden_units=128, n_layers=3, initialize=None):
     if initialize is None: initialize = init.xavier_uniform_()
     layers = [n_hidden_units] * ((n_layers - 1) * 2)
     layers.insert(0, state_size)
@@ -22,3 +22,10 @@ def initialize_params(state_size, action_size, n_hidden_units=128, n_layers=3, i
                                   [bias[b] for b in self.bias.keys()])
 
     return weights, bias, parameters
+
+def forward_compute(X, layer):
+    if layer == 1:
+        return F.relu(torch.mm(X, self.weights['1']) + self.bias['1'])
+    else:
+        X = self.__forward(F.relu(torch.mm(X, self.weights[str(layer)]) + self.bias[str(layer)]), layer-1)
+        return torch.mm(X, self.weights[str(layer)] + self.bias[str(layer)])
