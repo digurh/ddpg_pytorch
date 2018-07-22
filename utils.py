@@ -18,4 +18,7 @@ def initialize_params(state_size, action_size, n_hidden_units=128, n_layers=3, i
         weights[str(i)] = initialize(nn.Parameter(torch.FloatTensor(a, b)))
         bias[str(i)] = nn.Parameter(torch.zeros(b))
 
-    return weights, bias
+    parameters = nn.ParameterList([weights[w] for w in self.weights.keys()] +
+                                  [bias[b] for b in self.bias.keys()])
+
+    return weights, bias, parameters
