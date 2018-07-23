@@ -13,7 +13,7 @@ class Actor(nn.Module):
         self.weights, self.bias, self.parameters = init(state_size, action_size, n_hidden_units, n_layers)
 
     def forward(self, X):
-        return F.tanh(forc(X, str(len(self.weights.keys()))-1))
+        return F.tanh(forc(X, str(len(self.weights.keys()))-1), self.weights, self.bias)
 
 class Critic(nn.Module):
     def __init__(self, state_size, action_size, seed, n_hidden_units=128, n_layers=3):
