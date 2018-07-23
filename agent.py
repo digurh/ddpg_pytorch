@@ -8,6 +8,7 @@ import torch.nn.functional as F
 
 from net import Actor, Critic
 from experience_replay import ReplayBuffer
+import ou_noise
 
 class DDPGAgent:
     def __init__(self, state_size, action_size, seed, n_hidden_units=128, n_layers=3):
