@@ -16,7 +16,20 @@ class DDPGAgent:
         self.action_size = action_size
         self.seed = random.seed(seed)
 
-        # actor network
-        self.actor_local = Actor(state_size, action_size, seed)
+        # actor
+        self.actor = Actor(state_size, action_size, seed)
         self.actor_target = Actor(state_size, action_size, seed)
-        self.actor_opt = optim.Adam(self.actor_local.parameters, )
+        self.actor_opt = optim.Adam(self.actor.parameters, lr=1e-4)
+
+        # critic
+        self.critic = Critic(state_size, action_size, seed)
+        self.critic_target = Critic(state_size, action_size, seed)
+        self.critic_opt = optim.Adam(self.critic.parameters, lr=3e-4)
+
+        # will add noise
+        self.noise = OUNoise(action_size, seed)
+
+        # experience replay
+        self.replay = ReplayBuffer(batch_size, seed)
+
+    

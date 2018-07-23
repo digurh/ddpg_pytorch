@@ -10,7 +10,7 @@ class ExperienceReplay:
 
 
 class ReplayBuffer(ExperienceReplay):
-    def __init__(self, batch_size, buffer_max, seed):
+    def __init__(self, batch_size, seed, buffer_max=10000):
         super().__init__()
         self.batch_size = batch_size
         self.buffer = deque(maxlen=buffer_max)
