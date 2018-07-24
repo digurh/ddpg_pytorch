@@ -28,7 +28,7 @@ def linear_params_init(state_size, action_size, n_hidden_units=128, n_layers=3, 
 
 def forward_compute(X, layer, weights, bias):
     if layer == 1:
-        return F.relu(torch.mm(X, weights['1']) + bias['1'])
+        return torch.mm(X, weights['1']) + bias['1']
     else:
-        X = forward_compute(F.relu(torch.mm(X, weights[str(layer)]) + bias[str(layer)]), layer-1, weights, bias)
-        return torch.mm(X, weights[str(layer)] + bias[str(layer)])
+        X = F.relu(forward_compute(X, layer - 1, weights, bias))
+        return torch.mm(X, weights[str(layer)]) + bias[str(layer)]
