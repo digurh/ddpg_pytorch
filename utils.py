@@ -18,7 +18,6 @@ def linear_params_init(state_size, action_size, n_hidden_units=128, n_layers=3, 
     weights, bias = {}, {}
 
     for i, (a, b) in enumerate(layers):
-        print(i, a, b)
         weights[str(i+1)] = init.xavier_uniform_(nn.Parameter(torch.FloatTensor(a, b)))
         bias[str(i+1)] = nn.Parameter(torch.zeros(b))
 
