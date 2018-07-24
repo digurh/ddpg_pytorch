@@ -5,7 +5,7 @@ import copy
 
 class OUNoise:
     def __init__(self, size, seed, mu=0, theta=0.15, sigma=0.2):
-        self.mu = my * np.ones(size)
+        self.mu = mu * np.ones(size)
         self.theta = theta
         self.sigma = sigma
         self.seed = random.seed(seed)

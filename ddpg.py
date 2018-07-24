@@ -14,8 +14,6 @@ agent = DDPGAgent(env.observation_space.shape[0], env.action_space.shape[0], 0)
 n_episodes = 2000
 t_max = 1000
 
-state = env.step(env.action_space.sample())
-
 def train(n_episodes=2000, t_max=1000):
     score_deque = deque(maxlen=100)
     scores = []
@@ -42,7 +40,7 @@ def train(n_episodes=2000, t_max=1000):
             # torch.save(agent.critic_local.state_dict(), 'checkpoint_critic.pth')
     return scores
 
-scores = ddpg()
+scores = train()
 
 fig = plt.figure()
 ax = fig.add_subplot(111)

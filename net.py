@@ -1,8 +1,9 @@
 import numpy as np
-from utils import linear_params_init as init, forward_compute as forc
+from utils import linear_params_init as initial, forward_compute as forc
 
 import torch
 from torch import nn
+import torch.nn.init as init
 import torch.nn.functional as F
 
 
@@ -10,35 +11,32 @@ class Actor(nn.Module):
     def __init__(self, state_size, action_size, seed, n_hidden_units=128, n_layers=3):
         super().__init__()
         self.seed = torch.manual_seed(seed)
-        self.weights, self.bias, self.parameters = init(state_size, action_size, n_hidden_units, n_layers)
+        self.weights, self.bias, self.parameters = initial(state_size, action_size, n_hidden_units, n_layers)
 
     def forward(self, X):
-        return F.tanh(forc(X, str(len(self.weights.keys()))-1), self.weights, self.bias)
+        return F.tanh(forc(X, len(self.weights.keys())-1, self.weights, self.bias))
 
 class Critic(nn.Module):
     def __init__(self, state_size, action_size, seed, n_hidden_units=128, n_layers=3):
         super().__init__()
         self.seed = torch.manual_seed(seed)
-        self.weights, self.bias, self.parameters = self.params_init()
-
+        self.weights, self.bias, self.parameters = self.params_init(state_size, action_size, n_hidden_units)
 
     def params_init(self, state_size, action_size, n_hidden_units):
-        w_init = init.xavier_uniform_(nn.Parameter(torch.FloatTensor()))
         weights = {
-            '1': w_init(state_size, n_hidden_units),
-            '2': w_init(n_hidden_units+action_size, n_hidden_units),
-            '3': w_init(n_hidden_units, n_hidden_units//2),
-            '4': w_init(n_hidden_units//2, 1)
+            '1': init.xavier_uniform_(nn.Parameter(torch.FloatTensor(state_size, n_hidden_units))),
+            '2': init.xavier_uniform_(nn.Parameter(torch.FloatTensor(n_hidden_units+action_size, n_hidden_units))),
+            '3': init.xavier_uniform_(nn.Parameter(torch.FloatTensor(n_hidden_units, n_hidden_units//2))),
+            '4': init.xavier_uniform_(nn.Parameter(torch.FloatTensor(n_hidden_units//2, 1)))
         }
-        b_init = nn.Parameter(torch.zeros())
         bias = {
-            '1': b_init(n_hidden_units),
-            '2': b_init(n_hidden_units),
-            '3': b_init(n_hidden_units//2),
-            '4': b_init(1)
+            '1': nn.Parameter(torch.zeros(n_hidden_units)),
+            '2': nn.Parameter(torch.zeros(n_hidden_units)),
+            '3': nn.Parameter(torch.zeros(n_hidden_units//2)),
+            '4': nn.Parameter(torch.zeros(1))
         }
-        parameters = nn.ParameterList([weights[w] for w in self.weights.keys()] +
-                                      [bias[b] for b in self.bias.keys()])
+        parameters = nn.ParameterList([weights[w] for w in weights.keys()] +
+                                      [bias[b] for b in bias.keys()])
         return weights, bias, parameters
 
     def forward(self, state, action):

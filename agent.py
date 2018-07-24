@@ -8,7 +8,7 @@ import torch.nn.functional as F
 
 from net import Actor, Critic
 from experience_replay import ReplayBuffer
-import ou_noise
+from ou_noise import OUNoise
 
 
 GAMMA = 0.99
@@ -25,12 +25,12 @@ class DDPGAgent:
         # actor
         self.actor = Actor(state_size, action_size, seed).to(device)
         self.actor_target = Actor(state_size, action_size, seed).to(device)
-        self.actor_opt = optim.Adam(self.actor.parameters, lr=1e-4)
+        self.actor_opt = optim.Adam(self.actor.parameters(), lr=1e-4)
 
         # critic
         self.critic = Critic(state_size, action_size, seed).to(device)
         self.critic_target = Critic(state_size, action_size, seed).to(device)
-        self.critic_opt = optim.Adam(self.critic.parameters, lr=3e-4)
+        self.critic_opt = optim.Adam(self.critic.parameters(), lr=3e-4)
 
         # will add noise
         self.noise = OUNoise(action_size, seed)
@@ -65,7 +65,7 @@ class DDPGAgent:
             self.learn(experiences, gamma)
 
     def learn(self, experiences, gamma):
-         '''
+        '''
             Update policy and value parameters using given batch of experience tuples.
             Q_targets = r + γ * critic_target(next_state, actor_target(next_state))
             where:
@@ -75,7 +75,6 @@ class DDPGAgent:
                     gamma (float): discount factor
         '''
         states, actions, rewards, next_states, dones = experiences
-
         # update critic:
         #   get predicted next state actions and Qvalues from targets
         next_actions = self.actor_target(next_states)
