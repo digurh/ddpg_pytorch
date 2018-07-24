@@ -9,7 +9,7 @@ import torch.nn.functional as F
 
 
 def linear_params_init(state_size, action_size, n_hidden_units=128, n_layers=3, initialize=None):
-    if initialize is None: initialize = init.xavier_uniform_
+    # if initialize is None: initialize = init.xavier_uniform_()
     layers = [n_hidden_units] * ((n_layers - 1) * 2)
     layers.insert(0, state_size)
     layers.append(action_size)
@@ -18,8 +18,9 @@ def linear_params_init(state_size, action_size, n_hidden_units=128, n_layers=3, 
     weights, bias = {}, {}
 
     for i, (a, b) in enumerate(layers):
-        weights[str(i)] = initialize(nn.Parameter(torch.FloatTensor(a, b)))
-        bias[str(i)] = nn.Parameter(torch.zeros(b))
+        print(i, a, b)
+        weights[str(i+1)] = init.xavier_uniform_(nn.Parameter(torch.FloatTensor(a, b)))
+        bias[str(i+1)] = nn.Parameter(torch.zeros(b))
 
     parameters = nn.ParameterList([weights[w] for w in weights.keys()] +
                                   [bias[b] for b in bias.keys()])
