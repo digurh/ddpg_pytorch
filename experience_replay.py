@@ -19,7 +19,7 @@ class ReplayBuffer(ExperienceReplay):
 
         self.experience = namedtuple('Experience', field_names=['state', 'action', 'reward', 'next_state', 'done'])
 
-    def add(self, state, action, rewar, next_state, done):
+    def add(self, state, action, reward, next_state, done):
         self.buffer.append(self.experience(state, action, reward, next_state, done))
 
     def sample(self):
