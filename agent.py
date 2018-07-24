@@ -30,7 +30,7 @@ class DDPGAgent:
         # critic
         self.critic = Critic(state_size, action_size, seed).to(device)
         self.critic_target = Critic(state_size, action_size, seed).to(device)
-        self.critic_opt = optim.Adam(self.critic.parameters(), lr=3e-4)
+        self.critic_opt = optim.Adam(self.critic.parameters(), lr=3e-4, weight_decay=0.0001)
 
         # will add noise
         self.noise = OUNoise(action_size, seed)
@@ -62,7 +62,7 @@ class DDPGAgent:
 
         if self.replay.len() > self.replay.batch_size:
             experiences = self.replay.sample()
-            self.learn(experiences, gamma)
+            self.learn(experiences, GAMMA)
 
     def learn(self, experiences, gamma):
         '''
@@ -110,5 +110,5 @@ class DDPGAgent:
                     target: PyTorch model (weights will be copied to)
                     tau (float): interpolation parameter
         '''
-        for target_param, local_param in zip(target.parameters, local.parameters):
+        for target_param, local_param in zip(target.parameters(), local.parameters()):
             target_param.data.copy_(tau * local_param.data + (1.0 - tau) * target_param.data)

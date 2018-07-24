@@ -17,13 +17,13 @@ t_max = 1000
 def train(n_episodes=2000, t_max=1000):
     score_deque = deque(maxlen=100)
     scores = []
-    for ep in range(n_episodes+1):
+    for ep in range(1, n_episodes+1):
         state = env.reset()
         agent.reset()
         score = 0
         for step in range(t_max):
             action = agent.act(state)
-            next_state, reward, done, _ = env.step(action)
+            next_state, reward, done, _ = env.step(action[0])
             agent.step(state, action, reward, next_state, done)
             state = next_state
             score += reward
@@ -33,9 +33,9 @@ def train(n_episodes=2000, t_max=1000):
         score_deque.append(score)
         scores.append(score)
 
-        print('\rEpisode {}\tAverage Score: {:.2f}\tScore: {:.2f}'.format(i_episode, np.mean(scores_deque), score), end="")
-        if i_episode % 100 == 0:
-            print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_deque)))
+        print('\rEpisode {}\tAverage Score: {:.2f}\tScore: {:.2f}'.format(ep, np.mean(score_deque), score))
+        if ep % 100 == 0:
+            print('\rEpisode {}\tAverage Score: {:.2f}'.format(ep, np.mean(score_deque)))
             # torch.save(agent.actor_local.state_dict(), 'checkpoint_actor.pth')
             # torch.save(agent.critic_local.state_dict(), 'checkpoint_critic.pth')
     return scores
